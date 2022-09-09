@@ -11,7 +11,7 @@ import java.util.List;
 public class Motoqueiros {
 
     public static void main(String[] args) {
-        int i, aux, aux1, aux2, m1 = 0, m2 = 0, tempo = 0, max, n1, n2;
+        int i, aux, aux1, aux2, m1 = 0, m2 = 0, tempo = 0, max, n1, n2, pivot;
         ArrayList<Integer> entregas = new ArrayList<Integer>();
         ArrayList<Integer> mot1 = new ArrayList<Integer>();
         ArrayList<Integer> mot2 = new ArrayList<Integer>();
@@ -24,16 +24,17 @@ public class Motoqueiros {
         }
 
         Collections.sort(entregas);
+
         
-        n1 = entregas.remove(entregas.size()-1);
-        n2 = entregas.remove(entregas.size()-1);
-        
-        
+        //Separa os dois maiores números
+        n1 = entregas.remove(entregas.size() - 1);
+        n2 = entregas.remove(entregas.size() - 1);
+
         aux1 = entregas.remove(0);
         aux2 = entregas.remove(0);
         i = 0;
-        
-        
+
+        //Encontrar um numero para ser o pivô, parecido com o algoritimo Quick Sort
         while (entregas.get(i) < (aux1 + aux2) + ((aux1 + aux2) / 2)) {
             i++;
         }
@@ -42,35 +43,37 @@ public class Motoqueiros {
         mot1.add(aux2);
         mot2.add(entregas.remove(i));
 
+        if (i >= entregas.size()) {
+            pivot = entregas.size() - 1;
+        } else {
+            pivot = i;
+        }
+
         while (!entregas.isEmpty()) {
+            if (pivot > 1) {
 
-            if (entregas.size() > 3) {
+                aux1 = entregas.get(0);
+                aux2 = entregas.get(1);
 
-                aux1 = entregas.remove(0);
-                aux2 = entregas.remove(0);
-
-                i = 0;
-
-                max = entregas.size() - 1;
-
-                while (entregas.get(i) <= (aux1 + aux2)) {
-                    i++;
+                while (aux1 + aux2 >= entregas.get(pivot) && pivot < entregas.size()-1) {
+                    pivot++;
                 }
 
-                mot1.add(aux1);
-                mot1.add(aux2);
-                mot2.add(entregas.remove(i));
+                mot2.add(entregas.remove(pivot));
 
-            } else if (entregas.size() == 3) {
                 mot1.add(entregas.remove(0));
-                mot2.add(entregas.remove(0));
                 mot1.add(entregas.remove(0));
 
-            } else if (entregas.size() == 2) {
-                mot1.add(entregas.remove(1));
-                mot2.add(entregas.remove(0));
+                pivot -= 2;
+            } else if (pivot == 0 && entregas.size() > 1) {
+
+                mot2.add(entregas.remove(pivot));
+                mot1.add(entregas.remove(pivot));
+
+                pivot = entregas.size() - 1;
             } else {
-                mot1.add(entregas.remove(0));
+                pivot--;
+                mot1.add(entregas.remove(pivot));
             }
         }
 
@@ -81,24 +84,24 @@ public class Motoqueiros {
             m1 += (mot1.get(i) * 2);
         }
 
-        for (i = 0; i < mot2.size() ; i++) {
+        for (i = 0; i < mot2.size(); i++) {
             m2 += (mot2.get(i) * 2);
         }
-        
+
         if (m1 > m2) {
             mot1.add(n2);
             m1 += n2;
-            
+
             mot2.add(n1);
             m2 += n1;
         } else {
             m2 += n2;
             mot2.add(n2);
-            
+
             m1 += n1;
             mot1.add(n1);
         }
-        
+
         if (m1 > m2) {
             tempo = m1;
         } else {
